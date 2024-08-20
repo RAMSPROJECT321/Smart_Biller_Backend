@@ -2,13 +2,7 @@
     "builds": [
       {
         "src": "app.py",
-        "use": "@vercel/python",
-        "config": {
-          "runtime": "python3.8"
-        }
+        "use": "@vercel/python"
       }
-    ],
-    "scripts": {
-      "postinstall": "apt-get update && apt-get install -y libgl1-mesa-glx"
-    }
+    ]
   }
