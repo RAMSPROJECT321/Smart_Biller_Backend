@@ -1,4 +1,4 @@
-import install_dependencies
+# import install_dependencies
 from flask import Flask, Response
 import cv2
 
@@ -104,8 +104,8 @@ def method_01():
     return "It is Working Very Well"
 
 
-if __name__ == '__main__':
-    app.run(debug=True)
+# if __name__ == '__main__':
+#     app.run(debug=True)
 
 
 
