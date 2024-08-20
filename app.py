@@ -91,6 +91,10 @@ def stop_camera():
     return "Camera stopped", 200
 
 
+@app.route('/hello', methods=['GET'])
+def hello():
+    return Response("Hello World")
+
 
 
 
