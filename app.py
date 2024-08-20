@@ -1,4 +1,5 @@
-from flask import Flask
+from flask import Flask, Response
+import cv2
 
 # from flask import Flask, Response, request, jsonify
 # # from flask_cors import CORS
@@ -18,6 +19,78 @@ from flask import Flask
 
 app = Flask(__name__)
 # # CORS(app)  # Enable CORS
+
+
+
+current_frame = None
+camera = None
+is_camera_running = False
+
+
+def generate_frames():
+    
+    global current_frame
+    global camera
+    # camera = cv2.VideoCapture(0)
+    # cap = cv2.VideoCapture(0)
+    try:
+        while is_camera_running:
+            success, frame = camera.read()
+            if not success:
+                break
+            
+            current_frame = frame.copy() 
+            
+            # Convert frame to RGB
+            rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            # Detect faces
+            # results = face_detection.process(rgb_frame)
+            # if results.detections:
+            #     for detection in results.detections:
+            #         bboxC = detection.location_data.relative_bounding_box
+            #         h, w, _ = frame.shape
+            #         bbox = int(bboxC.xmin * w), int(bboxC.ymin * h), \
+            #             int(bboxC.width * w), int(bboxC.height * h)
+            #         cv2.rectangle(frame, bbox, (0, 255, 0), 2)
+            # Encode the frame in JPEG format
+            ret, buffer = cv2.imencode('.jpg', frame)
+            frame = buffer.tobytes()
+            yield (b'--frame\r\n'
+                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')        
+    finally:
+        print("Final Camera Close")
+
+
+@app.route('/start_camera', methods=['GET'])
+def start_camera():
+    global camera, is_camera_running
+    if not is_camera_running:
+        camera = cv2.VideoCapture(0)
+        is_camera_running = True
+    return "Camera started", 200
+
+
+@app.route('/video_feed')
+def video_feed():
+    global is_camera_running
+    global camera
+    if is_camera_running:
+        return Response(generate_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
+    else:
+        return "Camera is not running", 400
+    
+
+@app.route('/stop_camera', methods=['GET'])
+def stop_camera():
+    global camera, is_camera_running
+    if camera is not None:
+        camera.release()
+        camera = None
+    is_camera_running = False
+    return "Camera stopped", 200
+
+
+
 
 
 
