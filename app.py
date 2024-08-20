@@ -1,3 +1,4 @@
+import install_dependencies
 from flask import Flask, Response
 import cv2
 
@@ -70,7 +71,7 @@ def start_camera():
     return "Camera started", 200
 
 
-@app.route('/video_feed')
+@app.route('/video_feed',methods=['GET'])
 def video_feed():
     global is_camera_running
     global camera
