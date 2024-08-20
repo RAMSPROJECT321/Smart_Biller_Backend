@@ -93,7 +93,7 @@ def stop_camera():
 
 @app.route('/hello', methods=['GET'])
 def hello():
-    return Response("Hello World")
+    return Response("Hello")
 
 
 
